@@ -1,0 +1,217 @@
+<style>
+	#garrett-map {
+		display: none;
+		position: relative;
+		overflow:hidden;
+		width: 740px;
+		height: 450px;
+		background: url("http://gidedicated.com/images/upl/1500650758-001.png");
+		background-color: #000000;
+		background-repeat: no-repeat;
+		background-position: top left;
+		margin-bottom: 30px;
+	}
+	#garrett-scroll {
+		position: absolute;
+		width: 740px;
+		height: 450px;
+		overflow-y: scroll;
+		overflow-x: hidden;
+	}
+	#garrett-info {
+		padding: 0 10px;
+		width: 740px;
+		position: absolute;
+		top: 300px;
+	}	
+	#garrett-info p {
+		color: rgba(255,255,255,.8);
+		font-family: "PT Serif";
+		font-size: 18px;
+		padding: 20px 20px 0 0;
+	}
+	#garrett-info h4 {
+		color: #ffcd45;
+		font-family: "PT Serif";
+		font-size: 30px;
+	}
+	#garrett-eclipse {
+		position: absolute;
+		top: 10px;
+		left: -200px;
+		width: 108px;
+		height: 108px;
+		line-height: 108px;
+		background-color: rgba(0,0,0,0.4);
+		box-shadow: 0px 0px 15px 15px rgba(0,0,0,0.2);
+		border-radius: 50%;
+		text-align: center;
+		color: #ffffff;
+	}
+	#garrett-eclipse div {
+		box-shadow: 0px 0px 10px 10px rgba(0,0,0,0.8);
+		position: absolute;
+		top: 16px;
+		left: 16px;
+		width: 75px;
+		height: 75px;
+		line-height: 75px;
+		background-color: rgba(0,0,0,0.8);
+		border: 1px solid rgba(0,0,0,0.5);
+		border-radius: 50%;
+		text-align: center;
+		color: #ffffff;
+	}
+	#garrett-live {
+		position: absolute;
+		top: 30px;
+		right: 30px;
+		background: #c9302c;
+		background: linear-gradient(to bottom,  #c9302c 0%,#9b2222 100%);
+		font-family: "Helvetica", "Arial", sans-serif;
+		color: #ffffff;
+		font-weight: bold;
+		font-size: 24px;
+		line-height: 24px;
+		text-align: center;
+		display: none;
+		padding: 5px 10px;
+	}
+</style>
+
+<div id="garrett-map" class="hidden-xs hidden-md">
+	<div id="garrett-eclipse">
+		<div></div>
+	</div>
+	<div id="garrett-info">&nbsp;</div>
+	<div id="garrett-scroll">
+		<div style="height:3000px;"></div>
+	</div>
+	<div id="garrett-live">LIVE</div>
+</div>
+
+<script>
+	function map_range(value, low1, high1, low2, high2) {
+		return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
+	}
+	var defaultTime = "<h4 style=\"text-align:right;padding:50px 30px 0 0;\">Scroll here for more info &rsaquo;</h4>";
+	var defaultInfo = "<p style=\"text-align:right;padding:0;\">You can also use your mouse wheel over the map or drag up and down on a tablet.</p>";
+	var clock = "<i class=\"fa fa-clock-o\" aria-hidden=\"true\"></i>";
+	var marker= "<i class=\"fa fa-map-marker\" aria-hidden=\"true\"></i>";
+	
+	$("#garrett-map").show();
+	$("#garrett-info").html(defaultTime + defaultInfo);	
+	
+	function live_mode() {
+		startTime = 1503337620;
+		endTime   = 1503338760 +2;
+		var loop = setInterval(function () {
+			var sec = new Date().getTime() / 1000;
+			var scrollto = Math.floor(map_range(sec - startTime+60, 0, 21*60, 50, 2500));
+			//console.log(scrollto);
+			if (sec > startTime+2 && sec < endTime) {
+				$("#garrett-live").show();
+				$("#garrett-scroll").css("width", 790);
+				$("#garrett-scroll").scrollTop(scrollto);
+			} else if (sec > endTime) {
+				$("#garrett-live").hide();
+				$("#garrett-scroll").css("width", 740);
+				clearInterval(loop);
+			}
+		}, 1000);
+	}
+	$(live_mode);	
+	
+	$('#garrett-scroll').scroll(function () {
+		var num = $(this).scrollTop();
+		var min = Math.floor(map_range(num, 50, 2500, 0, 21));
+		
+		switch (min) {
+			case 1:
+				var time = "<h4>"+clock+" 11:47<br>am MDT</h4>";
+				var info = "<p>"+marker+" The total eclipse starts to cross Nebraska on the state's western edge, with Mitchell experiencing the total eclipse starting at 11:47:47am MDT and lasting for 1 minute, 53 seconds.</p>";
+				break;
+			case 2:
+				var time = "<h4>"+clock+" 11:48<br>am MDT</h4>";
+				var info = "<p>"+marker+" The total eclipse will be viewable in Scottsbluff at 11:48:11am MDT before the viewing window moves across Hemingford, Crawford and Bayard for durations of anywhere from 45 seconds (Crawford) to 2 minutes and 17 seconds (Hemingford).</p>";
+				break;
+			case 3:
+				var time = "<h4>"+clock+" 11:49<br>am MDT</h4>";
+				var info = "<p>"+marker+" The total eclipse will make its way east towards Alliance, where it can be seen for 2 minutes, 30 seconds starting at 11:49:13am MDT. Farther south, in Bridgeport, the total eclipse will be visible for 1 minute, 16 seconds.</p>";
+				break;
+			case 4:
+				var time = "<h4>"+clock+" 11:50<br>am MDT</h4>";
+				var info = "<p>"+marker+" The eclipse will move farther into the Panhandle. Lakeside will see 2 minutes, 28 seconds of totality starting at 11:50:06am MDT.</p>";
+				break;
+			case 5:
+				var time = "<h4>"+clock+" 11:51<br>am MDT</h4>";
+				var info = "<p>"+marker+" The total eclipse will reach Hyannis – 35 miles east of the last viewing point – at 11:51:28am MDT, where the viewing window will last 2 minutes, 19 seconds.</p>";
+				break;
+			case 6:
+				var time = "<h4>"+clock+" 11:52<br>am MDT</h4>";
+				var info = "<p>"+marker+" The western Nebraska towns of Whitman (11:52:03am MDT) and Bucktail (11:52:13am MDT) will find themselves within range of the total eclipse for more than 2 minutes.</p>";
+				break;
+			case 7:
+				var time = "<h4>"+clock+" 11:53<br>am MDT</h4>";
+				var info = "<p>"+marker+" The total eclipse will be seen over Tyron at 11:53:04am MDT for 2 minutes, 33 seconds, before making its way to Mullen at 11:53:17am MDT and finally Stapleton at 11:53:58am MDT. It will only be visible in Mullen for 1 minute, 24 seconds.</p>";
+				break;
+			case 8:
+				var time = "<h4>"+clock+" 12:54<br>pm CDT</h4>";
+				var info = "<p>"+marker+" The total eclipse will reach North Platte at 12:54:03 and be visible for 1 minute, 40 seconds. The window in Thedford is only 51 seconds, starting at 12:54:28.</p>";
+				break;
+			case 9:
+				var time = "<h4>"+clock+" 12:55<br>pm CDT</h4>";
+				var info = "<p>"+marker+" As the total eclipse moves farther east, Broken Bow will be in the viewing area at 12:55:27 for 2 minutes, 25 seconds. The total eclipse will also be visible from Gothenberg and Cozad.</p>";
+				break;
+			case 10:
+				var time = "<h4>"+clock+" 12:56<br>pm CDT</h4>";
+				var info = "<p>"+marker+" The total eclipse nears the halfway point in its trip across Nebraska. It will be visible from Lexington at 12:56:28 for 1 minute and 14 seconds.</p>";
+				break;
+			case 11:
+				var time = "<h4>"+clock+" 12:57<br>pm CDT</h4>";
+				var info = "<p>"+marker+" Ravenna will experience the total eclipse for 2 minutes and 35 seconds — the longest stretch in Nebraska — starting at 12:57:21. The viewing window reaches Kearney a few seconds later, but will only be visible for 1 minute, 54 seconds.</p>";
+				break;
+			case 12:
+				var time = "<h4>"+clock+" 12:58<br>pm CDT</h4>";
+				var info = "<p>"+marker+" The eclipse moves farther into eastern Nebraska, reaching St. Paul at 12:58:27, Grand Island at 12:58:34 and Hastings at 12:58:50 for durations between 2 minutes and 3 seconds and 2 minutes and 34 seconds.</p>";
+				break;
+			case 13:
+				var time = "<h4>"+clock+" 12:59<br>pm CDT</h4>";
+				var info = "<p>"+marker+" The total eclipse will be visible from Central City at 12:59:29 for 1 minute and 54 seconds and in Sutton at 12:59:43 for 2 minutes and 34 seconds.</p>";
+				break;
+			case 14:
+				var time = "<h4>"+clock+" 1:00<br>pm CDT</h4>";
+				var info = "<p>"+marker+" The total eclipse will reach York at 1:00:14 and be visible for 2 minutes and 19 seconds. It will be visible in Geneva – 24 miles south of York – for 2 minutes and 34 seconds starting at 11:35:38.</p>";
+				break;
+			case 15:
+				var time = "<h4>"+clock+" 1:01<br>pm CDT</h4>";
+				var info = "<p>"+marker+" The total eclipse will be visible from Hebron, Seward, Crete and Fairbury starting at 1:01:07. It will last for anywhere from 1 minute and 26 seconds (Hebron) to 2 minutes and 26 seconds (Crete).</p>";
+				break;
+			case 16:
+				var time = "<h4>"+clock+" 1:02<br>pm CDT</h4>";
+				var info = "<p>"+marker+" The total eclipse will be seen over the capital city at 1:02:36 for 1 minute and 24 seconds. In Beatrice – 43 miles south of Lincoln – it can be seen for 2 minutes and 35 seconds.</p>";
+				break;
+			case 17:
+				var time = "<h4>"+clock+" 1:03<br>pm CDT</h4>";
+				var info = "<p>"+marker+" The total eclipse will continue its path across southeastern Nebraska, hitting Table Rock at 1:03:34 and Humboldt at 1:03:53, both for 2 minutes and 37 seconds.</p>";
+				break;
+			case 18:
+				var time = "<h4>"+clock+" 1:04<br>pm CDT</h4>";
+				var info = "<p>"+marker+" The total eclipse will reach Auburn at 1:04:12 before hitting its final destination, Falls City, at 1:04:40, where it will be visible for 2 minutes and 37 seconds.</p>";
+				break;
+			case 19:
+				var time = "<h4>"+clock+" 1:05<br>pm CDT</h4>";
+				var info = "<p>"+marker+" The total eclipse will reach Auburn at 1:04:12 before hitting its final destination, Falls City, at 1:04:40, where it will be visible for 2 minutes and 37 seconds.</p>";
+				break;
+			default:
+				var time = defaultTime;
+				var info = defaultInfo;
+		}
+		
+		$('#garrett-info').html(time + info);
+		$('#garrett-eclipse').css({
+			'top': num*0.1 + Math.pow(num/500,2.6) + 10, //don't look at this math. It's nonsense.
+			'left': num/3 - 125
+		});
+	});
+</script>
